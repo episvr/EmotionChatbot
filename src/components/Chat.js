@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Camera from "./Camera";
+import Welcom from "./Welcome";
 import { Bubble, Sender } from "@ant-design/x";
 import { UserOutlined, RobotOutlined } from "@ant-design/icons";
 import { message } from "antd";
@@ -55,34 +56,39 @@ const Chat = () => {
 
   return (
     <div className="chat-wrapper">
-      <Camera onExpressionChange={setExpression} />
-      <div className="messages">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`message ${msg.sender === "user" ? "user-message" : "bot-message"}`}
-          >
-            <Bubble
-              content={msg.text}
-              position={msg.sender === "user" ? "right" : "left"}
-              avatar={{ icon: msg.sender === "user" ? <UserOutlined /> : <RobotOutlined /> }}
-              header={msg.sender === "user" ? "You" : "AI Bot"}
-              type={msg.sender === "user" ? "primary" : "normal"}
-            />
-          </div>
-        ))}
+      <div className="camera-container">
+        <Camera onExpressionChange={setExpression} />
       </div>
-      <Sender
-        placeholder="输入你的消息..."
-        loading={loading}
-        value={input}
-        onChange={(v) => setInput(v)}
-        onSubmit={sendMessage}
-        onCancel={() => {
-          setInput("");
-          message.info("Cancelled input");
-        }}
-      />
+      <div className="chat-section">
+        <Welcom />
+        <div className="messages">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`message ${msg.sender === "user" ? "user-message" : "bot-message"}`}
+            >
+              <Bubble
+                content={msg.text}
+                position={msg.sender === "user" ? "right" : "left"}
+                avatar={{ icon: msg.sender === "user" ? <UserOutlined /> : <RobotOutlined /> }}
+                header={msg.sender === "user" ? "You" : "AI Bot"}
+                type={msg.sender === "user" ? "primary" : "normal"}
+              />
+            </div>
+          ))}
+        </div>
+        <Sender
+          placeholder="输入你的消息..."
+          loading={loading}
+          value={input}
+          onChange={(v) => setInput(v)}
+          onSubmit={sendMessage}
+          onCancel={() => {
+            setInput("");
+            message.info("Cancelled input");
+          }}
+        />
+      </div>
     </div>
   );
 };

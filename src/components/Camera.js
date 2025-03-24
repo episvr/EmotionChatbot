@@ -63,7 +63,7 @@ const Camera = ({ onExpressionChange }) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <video ref={videoRef} autoPlay muted width="640" height="480" />
+      <video ref={videoRef} autoPlay muted width="640" height="480" style={{  borderRadius: 16 }}/>
       <canvas ref={canvasRef} width="640" height="480" style={{ position: "absolute", top: 0, left: 0 }} />
       {expression && <p style={{ position: "absolute", top: "10px", left: "10px", color: "white", backgroundColor: "black", padding: "5px" }}>当前表情: {expression}</p>}
     </div>

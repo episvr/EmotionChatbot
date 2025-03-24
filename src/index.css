@@ -30,8 +30,8 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 800px;
+  width: 1200px;
+  /* max-width: 800px; */
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
