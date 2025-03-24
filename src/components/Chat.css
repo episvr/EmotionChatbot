@@ -1,0 +1,49 @@
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    width: 700px;
+  }
+  
+  .messages {
+    height: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #d3d7db;
+    border-radius: 12px;
+    padding: 12px;
+  }
+  
+  .message {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .user-message {
+    justify-content: flex-end;
+  }
+  
+  .bot-message {
+    justify-content: flex-start;
+  }
+  
+  .camera-container {
+    position: relative;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .expression-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    background-color: black;
+    padding: 5px;
+    border-radius: 5px;
+  }

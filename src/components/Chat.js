@@ -3,26 +3,15 @@ import axios from "axios";
 import Camera from "./Camera";
 import { Bubble, Sender } from "@ant-design/x";
 import { UserOutlined, RobotOutlined } from "@ant-design/icons";
-import { App, Flex } from "antd";
-import "../index.css";
+import { message } from "antd";
+import { getPromptBasedOnExpression } from "../utils";
+import "./Chat.css";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [expression, setExpression] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { message } = App.useApp();
-
-  const getPromptBasedOnExpression = (expression) => {
-    const prompts = {
-      happy: "The user seems happy! Engage in a cheerful conversation.",
-      sad: "The user seems sad. Provide comforting and supportive responses.",
-      angry: "The user looks angry. Remain calm and offer helpful solutions.",
-      surprised: "The user is surprised! Ask him Why.",
-      neutral: "Maintain a neutral and friendly conversation.",
-    };
-    return prompts[expression] || "Maintain a normal conversation.";
-  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -39,11 +28,14 @@ const Chat = () => {
         "https://api.chatanywhere.tech/v1/chat/completions",
         {
           model: "gpt-4o-mini",
-          messages: [{ role: "system", content: fullPrompt }, { role: "user", content: input }],
+          messages: [
+            { role: "system", content: fullPrompt },
+            { role: "user", content: input },
+          ],
         },
         {
           headers: {
-            Authorization: `API_KEY`,
+            Authorization: process.env.REACT_APP_API_KEY,
             "Content-Type": "application/json",
           },
         }
@@ -62,49 +54,37 @@ const Chat = () => {
   };
 
   return (
-    <Flex vertical style={{ padding: "20px", gap: "16px" }}>
+    <div className="chat-wrapper">
       <Camera onExpressionChange={setExpression} />
-      <div className="messages" style={{ maxHeight: "400px", overflowY: "auto" }}>
-        {messages.map((msg, index) =>
-          msg.sender === "user" ? (
-            <div key={index} style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-              <Bubble
-                content={msg.text}
-                position="right"
-                avatar={{ icon: <UserOutlined /> }}
-                header="You"
-              />
-            </div>
-          ) : (
-            <div key={index} style={{ display: "flex", justifyContent: "flex-start", marginBottom: "10px" }}>
-              <Bubble
-                content={msg.text}
-                position="left"
-                avatar={{ icon: <RobotOutlined /> }}
-                header="AI Bot"
-              />
-            </div>
-          )
-        )}
+      <div className="messages">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`message ${msg.sender === "user" ? "user-message" : "bot-message"}`}
+          >
+            <Bubble
+              content={msg.text}
+              position={msg.sender === "user" ? "right" : "left"}
+              avatar={{ icon: msg.sender === "user" ? <UserOutlined /> : <RobotOutlined /> }}
+              header={msg.sender === "user" ? "You" : "AI Bot"}
+              type={msg.sender === "user" ? "primary" : "normal"}
+            />
+          </div>
+        ))}
       </div>
-
-      {/* 使用 Ant Design X 的 Sender */}
       <Sender
+        placeholder="输入你的消息..."
         loading={loading}
         value={input}
         onChange={(v) => setInput(v)}
-        onSubmit={() => sendMessage()}
+        onSubmit={sendMessage}
         onCancel={() => {
           setInput("");
           message.info("Cancelled input");
         }}
       />
-    </Flex>
+    </div>
   );
 };
 
-export default () => (
-  <App>
-    <Chat />
-  </App>
-);
+export default Chat;

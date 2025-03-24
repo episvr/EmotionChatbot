@@ -37,19 +37,3 @@ code {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-.messages {
-  height: 200px;
-  overflow-y: auto;
-  border: 1px solid #a6afb7;
-  border-radius: 12px;
-  padding: 10px;
-}
-
-.message-user {
-  color: rgb(148, 148, 160);
-}
-
-.message-bot {
-  color: green;
-}
