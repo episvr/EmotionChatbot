@@ -41,12 +41,13 @@ code {
 .messages {
   height: 200px;
   overflow-y: auto;
-  border: 1px solid black;
+  border: 1px solid #a6afb7;
+  border-radius: 12px;
   padding: 10px;
 }
 
 .message-user {
-  color: blue;
+  color: rgb(148, 148, 160);
 }
 
 .message-bot {

@@ -4,7 +4,7 @@ import Camera from "./Camera";
 import { Bubble, Sender } from "@ant-design/x";
 import { UserOutlined, RobotOutlined } from "@ant-design/icons";
 import { App, Flex } from "antd";
-import "./index.css";
+import "../index.css";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
