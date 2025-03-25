@@ -60,8 +60,8 @@ const Chat = () => {
         <Camera onExpressionChange={setExpression} />
       </div>
       <div className="chat-section">
-        <Welcom />
         <div className="messages">
+          {messages.length === 0 && <Welcom />}
           {messages.map((msg, index) => (
             <div
               key={index}
