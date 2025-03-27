@@ -24,19 +24,23 @@ const projectInfo = `
 - 尽量保持回答的简洁性，不要过于冗长。
 `;
 
-
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [expression, setExpression] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isBotTyping, setIsBotTyping] = useState(false); // 新增状态
 
   const sendMessage = async () => {
     if (!input.trim()) return;
     setLoading(true);
+    setIsBotTyping(true); // 发送后显示 AI 正在输入
 
     const userMessage = { sender: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => {
+      const updatedMessages = [...prev, userMessage];
+      return updatedMessages.slice(-10); // 保持最近 10 条消息
+    });
 
     const expressionPrompt = getPromptBasedOnExpression(expression);
     const fullPrompt = `${expressionPrompt}\nAssistant:`;
@@ -47,7 +51,11 @@ const Chat = () => {
         {
           model: "deepseek-chat",
           messages: [
-            { role: "system", content: projectInfo },  // 预输入项目信息
+            { role: "system", content: projectInfo },
+            ...messages.slice(-9).map((msg) => ({
+              role: msg.sender === "user" ? "user" : "assistant",
+              content: msg.text,
+            })),
             { role: "system", content: fullPrompt },
             { role: "user", content: input },
           ],
@@ -60,10 +68,12 @@ const Chat = () => {
         }
       );
 
-
-
       const botMessage = { sender: "bot", text: response.data.choices[0].message.content };
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages((prev) => {
+        const updatedMessages = [...prev, botMessage];
+        return updatedMessages.slice(-10); // 只保留最近 10 条
+      });
+
       message.success("AI replied successfully!");
     } catch (error) {
       console.error("Error sending message:", error);
@@ -71,6 +81,7 @@ const Chat = () => {
     } finally {
       setInput("");
       setLoading(false);
+      setIsBotTyping(false); // AI 回复完后隐藏加载动画
     }
   };
 
@@ -90,12 +101,23 @@ const Chat = () => {
               <Bubble
                 content={msg.text}
                 position={msg.sender === "user" ? "right" : "left"}
+                typing={{ step: 2, interval: 50 }}
                 avatar={{ icon: msg.sender === "user" ? <UserOutlined /> : <RobotOutlined /> }}
                 header={msg.sender === "user" ? "You" : "AI Bot"}
                 type={msg.sender === "user" ? "primary" : "normal"}
               />
             </div>
           ))}
+          {isBotTyping && ( // AI 回复时显示加载动画
+            <div className="bot-message">
+              <Bubble
+                loading
+                position="left"
+                avatar={{ icon: <RobotOutlined /> }}
+                header="AI Bot"
+              />
+            </div>
+          )}
         </div>
         <Sender
           placeholder="说点什么吧~"
